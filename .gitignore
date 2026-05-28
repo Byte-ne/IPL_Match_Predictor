@@ -8,4 +8,3 @@ catboost_info/
 artifacts/catboost_logs/
 data/api_cache/
 get-pip.py
-BEGINNER_SETUP.md
