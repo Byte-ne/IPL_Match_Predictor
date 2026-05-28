@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — IPL Match Predictor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>IPLp / IPL Match Predictor</h1>
+    <p>Pre-match and match-day win probabilities. No account. No API key required.</p>
+    <nav>
+      <a href="/">Predict</a>
+      <a href="https://github.com/" id="docs-link" rel="noopener">Documentation</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="hint">
+      Pick two teams, venue, and date. Match-day mode adds toss info.
+      Team names should match historical IPL spelling (use autocomplete).
+    </p>
+
+    <div class="tabs">
+      <button type="button" id="mode-pre" class="active">pre-match</button>
+      <button type="button" id="mode-md">match-day</button>
+    </div>
+
+    <datalist id="teams-list"></datalist>
+    <datalist id="venues-list"></datalist>
+
+    <section id="panel-pre" class="panel active">
+      <h2>Pre-match model</h2>
+      <form id="form-pre">
+        <div class="row two">
+          <div>
+            <label for="team1-pre">team1</label>
+            <input id="team1-pre" name="team1" list="teams-list" required placeholder="Mumbai Indians">
+          </div>
+          <div>
+            <label for="team2-pre">team2</label>
+            <input id="team2-pre" name="team2" list="teams-list" required placeholder="Chennai Super Kings">
+          </div>
+        </div>
+        <label for="venue-pre">venue</label>
+        <input id="venue-pre" name="venue" list="venues-list" required placeholder="Wankhede Stadium, Mumbai">
+        <label for="date-pre">date (YYYY-MM-DD)</label>
+        <input id="date-pre" name="date" type="date" required>
+        <button type="submit">Predict</button>
+      </form>
+    </section>
+
+    <section id="panel-md" class="panel">
+      <h2>Match-day model</h2>
+      <form id="form-md">
+        <div class="row two">
+          <div>
+            <label for="team1-md">team1</label>
+            <input id="team1-md" name="team1" list="teams-list" required>
+          </div>
+          <div>
+            <label for="team2-md">team2</label>
+            <input id="team2-md" name="team2" list="teams-list" required>
+          </div>
+        </div>
+        <label for="venue-md">venue</label>
+        <input id="venue-md" name="venue" list="venues-list" required>
+        <label for="date-md">date</label>
+        <input id="date-md" name="date" type="date" required>
+        <div class="row two">
+          <div>
+            <label for="toss-winner">toss_winner</label>
+            <input id="toss-winner" name="toss_winner" list="teams-list" placeholder="optional">
+          </div>
+          <div>
+            <label for="toss-decision">toss_decision</label>
+            <select id="toss-decision" name="toss_decision">
+              <option value="">—</option>
+              <option value="bat">bat</option>
+              <option value="field">field</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit">Predict</button>
+      </form>
+    </section>
+
+    <pre id="result" aria-live="polite"></pre>
+  </main>
+
+  <footer>
+    Not betting advice. Model trained on public IPL results (2008–2024).
+    Hosted API serves the same models as the open-source IPLp CLI.
+  </footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
