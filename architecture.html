@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — Architecture</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Architecture</h1>
+    <p class="subtitle">Data flow, modules, artifacts.</p>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="architecture.html"><b>architecture</b></a>
+      <a href="math.html">math</a>
+      <a href="data.html">data</a>
+      <a href="training.html">training</a>
+      <a href="api.html">http-api</a>
+      <a href="web.html">web-app</a>
+    </nav>
+  </header>
+
+  <h2>Pipeline overview</h2>
+  <pre>
+matches.csv  →  normalize schema  →  feature builder (Elo + rolling)
+                                        ↓
+                              time split by season
+                                        ↓
+                              CatBoost + calibration
+                                        ↓
+                         model.joblib + ModelState snapshot
+                                        ↓
+                    CLI / HTTP API / web UI inference
+  </pre>
+
+  <h2>Python package map</h2>
+  <table>
+    <tr><th>path</th><th>role</th></tr>
+    <tr><td><code>ipl_predictor/data/</code></td><td>Download CSV, normalize columns, season splits.</td></tr>
+    <tr><td><code>ipl_predictor/features/</code></td><td>Elo, rolling form, h2h, ModelState persistence.</td></tr>
+    <tr><td><code>ipl_predictor/models/</code></td><td>Train CatBoost, calibrate, predict.</td></tr>
+    <tr><td><code>ipl_predictor/api/</code></td><td>Optional CricAPI client (CLI only; not required for web).</td></tr>
+    <tr><td><code>ipl_predictor/cli.py</code></td><td>argparse entry: download, train, predict, list-fixtures.</td></tr>
+    <tr><td><code>web/api/main.py</code></td><td>FastAPI wrapper for public HTTP access.</td></tr>
+  </table>
+
+  <h2>Artifacts</h2>
+  <table>
+    <tr><th>file</th><th>contents</th></tr>
+    <tr><td><code>artifacts/pre/model.joblib</code></td><td>Calibrated classifier, feature column list, ModelState.</td></tr>
+    <tr><td><code>artifacts/matchday/model.joblib</code></td><td>Same structure; extra toss categorical features.</td></tr>
+    <tr><td><code>artifacts/*/metrics.json</code></td><td>log_loss, brier, accuracy on train/valid split.</td></tr>
+    <tr><td><code>data/raw/matches.csv</code></td><td>Canonical input table after download.</td></tr>
+  </table>
+
+  <h2>Leakage safety</h2>
+  <p>
+    Elo and rolling features for match <em>i</em> are computed using only results from matches
+    <em>before</em> match <em>i</em> in chronological order. The model never sees future outcomes
+    when building features for training rows.
+  </p>
+  <p>
+    At inference time, <code>ModelState</code> stores ratings/form after the last training match
+    (2024 in the default dataset). Live 2026 fixtures use that state as “current” strength.
+  </p>
+
+  <h2>Validation strategy</h2>
+  <p>
+    Last two IPL <strong>seasons</strong> in the CSV are held out for validation.
+    All earlier seasons train the booster. Metrics in <code>metrics.json</code> refer to this split.
+  </p>
+
+  <h2>Web deployment shape</h2>
+  <pre>
+Browser  →  GET /static/*, POST /api/predict/*
+                ↓
+         FastAPI (web/api/main.py)
+                ↓
+         ipl_predictor.models.predict
+                ↓
+         artifacts/*.joblib on disk
+  </pre>
+  <p>
+    Set <code>IPL_PROJECT_ROOT</code> to the directory containing <code>ipl_predictor/</code>,
+    <code>artifacts/</code>, and <code>data/</code>.
+  </p>
+
+  <footer><a href="index.html">← index</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — Web App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Web application</h1>
+    <p class="subtitle">Public UI on the <code>site</code> branch.</p>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="architecture.html">architecture</a>
+      <a href="math.html">math</a>
+      <a href="data.html">data</a>
+      <a href="training.html">training</a>
+      <a href="api.html">http-api</a>
+      <a href="web.html"><b>web-app</b></a>
+    </nav>
+  </header>
+
+  <h2>Purpose</h2>
+  <p>
+    End users predict matches in a browser. They do not need Python, CLI, or a CricAPI key.
+    The server hosts trained models and the historical CSV for autocomplete.
+  </p>
+
+  <h2>Files</h2>
+  <table>
+    <tr><th>path</th><th>role</th></tr>
+    <tr><td><code>web/api/main.py</code></td><td>FastAPI app + static mount</td></tr>
+    <tr><td><code>web/public/index.html</code></td><td>UI</td></tr>
+    <tr><td><code>web/public/style.css</code></td><td>Plain responsive CSS</td></tr>
+    <tr><td><code>web/public/app.js</code></td><td>Calls /api/predict/*</td></tr>
+  </table>
+
+  <h2>Deploy (example)</h2>
+  <ol>
+    <li>Train on <code>main</code>, copy <code>artifacts/</code> + <code>data/raw/</code> + <code>ipl_predictor/</code> to host.</li>
+    <li>Install <code>requirements-api.txt</code>.</li>
+    <li>Start: <code>uvicorn site.api.main:app --host 0.0.0.0 --port 8000</code></li>
+    <li>Set <code>IPL_PROJECT_ROOT</code> to repo root on the server.</li>
+  </ol>
+
+  <h2>GitHub Pages</h2>
+  <p>
+    <code>docs</code> branch → enable Pages from branch <code>docs</code> / root.<br>
+    <code>site</code> branch → use Render, Railway, or Fly.io (needs Python runtime, not static Pages alone).
+  </p>
+
+  <footer><a href="index.html">← index</a></footer>
+</div>
+</body>
+</html>

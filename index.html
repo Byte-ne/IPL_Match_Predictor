@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp Documentation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>IPLp — Documentation</h1>
+    <p class="subtitle">IPL Match Predictor. Pre-match and match-day win probability models.</p>
+    <nav>
+      <a href="index.html"><b>index</b></a>
+      <a href="architecture.html">architecture</a>
+      <a href="math.html">math</a>
+      <a href="data.html">data</a>
+      <a href="training.html">training</a>
+      <a href="api.html">http-api</a>
+      <a href="web.html">web-app</a>
+    </nav>
+  </header>
+
+  <h2>What is IPLp?</h2>
+  <p>
+    IPLp predicts the probability that <strong>team1</strong> wins an IPL T20 match.
+    Two modes exist:
+  </p>
+  <ul>
+    <li><strong>pre-match</strong> — teams, venue, date, plus historical strength (Elo, form, head-to-head).</li>
+    <li><strong>match-day</strong> — same as pre-match, plus toss winner and toss decision (bat/field).</li>
+  </ul>
+  <p>
+    Output is always a calibrated probability, not a guarantee. Typical hold-out accuracy is ~52–58%.
+  </p>
+
+  <h2>Repository layout (Git branches)</h2>
+  <table>
+    <tr><th>branch</th><th>contents</th></tr>
+    <tr><td><code>main</code></td><td>Python package <code>ipl_predictor/</code>, CLI, training, data download.</td></tr>
+    <tr><td><code>docs</code></td><td>This static documentation site (GitHub Pages).</td></tr>
+    <tr><td><code>site</code></td><td>FastAPI backend + static web UI for public predictions.</td></tr>
+  </table>
+
+  <h2>Quick start (developers)</h2>
+  <pre>py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m ipl_predictor download-data --force
+python -m ipl_predictor train pre
+python -m ipl_predictor train matchday</pre>
+
+  <h2>Quick start (public users)</h2>
+  <p>
+    Use the hosted web app on the <code>site</code> branch deployment — no CLI, no CricAPI key.
+    Enter teams, venue, date; optional toss fields for match-day mode.
+  </p>
+  <p>See <a href="web.html">web-app</a> and <a href="api.html">http-api</a>.</p>
+
+  <h2>System requirements</h2>
+  <ul>
+    <li>Python 3.11 or 3.12 (64-bit Windows/macOS/Linux)</li>
+    <li>~500 MB disk for dependencies</li>
+    <li>Trained artifacts: <code>artifacts/pre/model.joblib</code>, <code>artifacts/matchday/model.joblib</code></li>
+  </ul>
+
+  <h2>What IPLp does not do</h2>
+  <ul>
+    <li>Ball-by-ball live score prediction</li>
+    <li>Player-level fantasy points (XI hash features exist but are not in the default model)</li>
+    <li>Automatic 2025/2026 results without refreshing the dataset</li>
+    <li>Betting advice — educational/research use only</li>
+  </ul>
+
+  <h2>License &amp; data</h2>
+  <p class="note">
+    Match CSV is aggregated from public community sources (2008–2024).
+    Team names and venues must match historical spelling for best results.
+  </p>
+
+  <footer>IPLp documentation — static HTML, no trackers.</footer>
+</div>
+</body>
+</html>
