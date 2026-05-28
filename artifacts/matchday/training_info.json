@@ -1,0 +1,12 @@
+{
+  "dataset": {
+    "source_url": "https://raw.githubusercontent.com/Kkarthik092000/Ipl-Analysis-project/main/ipl%202008-2024%20matches.csv",
+    "rows": 1090,
+    "min_season": 2008,
+    "max_season": 2024
+  },
+  "state_summary": {
+    "last_season": 2024,
+    "teams": 19
+  }
+}

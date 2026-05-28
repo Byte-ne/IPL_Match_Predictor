@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — Math &amp; ML</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Math &amp; machine learning</h1>
+    <p class="subtitle">What the model optimizes and how features are defined.</p>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="architecture.html">architecture</a>
+      <a href="math.html"><b>math</b></a>
+      <a href="data.html">data</a>
+      <a href="training.html">training</a>
+      <a href="api.html">http-api</a>
+      <a href="web.html">web-app</a>
+    </nav>
+  </header>
+
+  <h2>Prediction target</h2>
+  <p>
+    Binary label <code>y = 1</code> if team1 wins, else <code>0</code>.
+    Model outputs <code>p = P(team1 wins | x)</code> with <code>p ∈ (0,1)</code>.
+  </p>
+
+  <h2>Elo rating</h2>
+  <p>Before each match, teams A and B have ratings R_A, R_B.</p>
+  <pre>E_A = 1 / (1 + 10^((R_B - R_A) / 400))
+
+After match:
+R_A ← R_A + K * (S_A - E_A)
+R_B ← R_B + K * (S_B - E_B)
+
+S_A = 1 if A won else 0
+K = 24 (default)</pre>
+  <p>Features: <code>elo_team1</code>, <code>elo_team2</code>, <code>elo_diff</code>.</p>
+
+  <h2>Rolling form</h2>
+  <p>Win rate over the last N completed matches (default N=8):</p>
+  <pre>form(team) = (wins in last N) / N</pre>
+  <p>If fewer than N matches exist, average over available games. Default prior: 0.5.</p>
+
+  <h2>Head-to-head</h2>
+  <p>Win rate of team1 vs team2 over last M meetings (default M=10), computed before the current match.</p>
+
+  <h2>Gradient boosted trees (CatBoost)</h2>
+  <p>
+    A sum of regression trees approximates log-odds of team1 winning.
+    Categorical columns (team names, venue, city, toss fields) are handled natively.
+  </p>
+  <pre>score(x) = Σ_t f_t(x)
+p = σ(score) = 1 / (1 + exp(-score))</pre>
+
+  <h2>Loss function</h2>
+  <p>Training minimizes log loss (cross-entropy):</p>
+  <pre>L = -(1/n) Σ [ y_i log(p_i) + (1-y_i) log(1-p_i) ]</pre>
+
+  <h2>Calibration</h2>
+  <p>
+    Raw boosted scores are mapped with sigmoid (Platt-style) calibration fit on the
+  time-based validation seasons so that, e.g., among matches assigned 70% probability,
+  roughly 70% are team1 wins.
+  </p>
+
+  <h2>Why accuracy ≈ 55% is normal</h2>
+  <p>
+    T20 cricket has high variance (toss, form, injuries, conditions).
+    Probabilistic models are judged by log loss and calibration, not raw accuracy alone.
+  </p>
+
+  <footer><a href="index.html">← index</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — Training</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Training</h1>
+    <p class="subtitle">CLI commands, hyperparameters, metrics.</p>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="architecture.html">architecture</a>
+      <a href="math.html">math</a>
+      <a href="data.html">data</a>
+      <a href="training.html"><b>training</b></a>
+      <a href="api.html">http-api</a>
+      <a href="web.html">web-app</a>
+    </nav>
+  </header>
+
+  <h2>Commands</h2>
+  <pre>python -m ipl_predictor train pre
+python -m ipl_predictor train matchday</pre>
+  <p>Each run overwrites <code>artifacts/&lt;mode&gt;/model.joblib</code> (~1–2 minutes on a laptop).</p>
+
+  <h2>CatBoost defaults</h2>
+  <table>
+    <tr><th>parameter</th><th>value</th></tr>
+    <tr><td>depth</td><td>6</td></tr>
+    <tr><td>learning_rate</td><td>0.06</td></tr>
+    <tr><td>iterations</td><td>1200 (early stopping on valid)</td></tr>
+    <tr><td>random_seed</td><td>42</td></tr>
+  </table>
+
+  <h2>Metrics file</h2>
+  <p><code>artifacts/pre/metrics.json</code> example fields:</p>
+  <ul>
+    <li><code>train.log_loss</code>, <code>valid.log_loss</code></li>
+    <li><code>train.brier</code>, <code>valid.brier</code></li>
+    <li><code>train.accuracy</code>, <code>valid.accuracy</code></li>
+  </ul>
+
+  <h2>When to retrain</h2>
+  <ul>
+    <li>After <code>download-data --force</code></li>
+    <li>After changing feature code</li>
+    <li>Before deploying the web API with new artifacts</li>
+  </ul>
+
+  <h2>Deploying models to the web branch</h2>
+  <p>
+    Copy <code>artifacts/</code> and <code>data/raw/matches.csv</code> to the server
+    (or site-branch repo root) next to <code>ipl_predictor/</code>.
+  </p>
+
+  <footer><a href="index.html">← index</a></footer>
+</div>
+</body>
+</html>

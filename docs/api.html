@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IPLp — HTTP API</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>HTTP API</h1>
+    <p class="subtitle">FastAPI endpoints (site branch). No CricAPI required.</p>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="architecture.html">architecture</a>
+      <a href="math.html">math</a>
+      <a href="data.html">data</a>
+      <a href="training.html">training</a>
+      <a href="api.html"><b>http-api</b></a>
+      <a href="web.html">web-app</a>
+    </nav>
+  </header>
+
+  <h2>Run locally</h2>
+  <pre>pip install -r requirements-api.txt
+set IPL_PROJECT_ROOT=C:\path\to\repo
+uvicorn web.api.main:app --reload --port 8000</pre>
+  <p>Open <code>http://127.0.0.1:8000</code></p>
+
+  <h2>GET /api/health</h2>
+  <p>Returns whether pre and matchday model files exist.</p>
+
+  <h2>GET /api/meta/teams</h2>
+  <p>JSON list of team names from <code>matches.csv</code> (autocomplete).</p>
+
+  <h2>GET /api/meta/venues</h2>
+  <p>JSON list of venues from <code>matches.csv</code>.</p>
+
+  <h2>GET /api/meta/dataset</h2>
+  <p>Season range and row counts.</p>
+
+  <h2>POST /api/predict/pre</h2>
+  <pre>{
+  "team1": "Mumbai Indians",
+  "team2": "Chennai Super Kings",
+  "venue": "Wankhede Stadium, Mumbai",
+  "date": "2024-05-12"
+}</pre>
+  <p>Response:</p>
+  <pre>{
+  "team1": "...",
+  "team2": "...",
+  "p_team1_win": 0.52,
+  "p_team2_win": 0.48,
+  "predicted_winner": "..."
+}</pre>
+
+  <h2>POST /api/predict/matchday</h2>
+  <p>Same body as pre, plus optional:</p>
+  <pre>"toss_winner": "Mumbai Indians",
+"toss_decision": "bat"</pre>
+
+  <h2>Errors</h2>
+  <table>
+    <tr><th>code</th><th>meaning</th></tr>
+    <tr><td>400</td><td>Invalid date format</td></tr>
+    <tr><td>503</td><td>Models or dataset missing on server</td></tr>
+    <tr><td>500</td><td>Prediction failure (check team/venue spelling)</td></tr>
+  </table>
+
+  <footer><a href="index.html">← index</a></footer>
+</div>
+</body>
+</html>
