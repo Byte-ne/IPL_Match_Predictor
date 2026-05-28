@@ -1,4 +1,4 @@
-# IPLp $-$ Documentation
+# IPLp Docs
 
 Contains all the logic, math, reference, and guide.
 
